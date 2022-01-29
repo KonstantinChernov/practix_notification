@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message UserRegisteredRequest {
+  string email = 1;
+  string login = 2;
+  string password = 3;
+}
+
+message UserRegisteredResponse {
+  bool result = 1;
+}
+
+service NotifyRegister {
+  rpc UserRegisterEvent (UserRegisteredRequest) returns (UserRegisteredResponse) {}
+}
