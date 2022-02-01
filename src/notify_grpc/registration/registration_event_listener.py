@@ -13,18 +13,18 @@ from services.send_event import EventSender
 
 class NotifyNewUser(notify_registration_pb2_grpc.NotifyRegisterServicer):
     def UserRegisterEvent(self, request, context):
-        event_type = "user_registration"
+        event_type = "auth.user_registration"
         send_context = {
             "email": request.email,
             "login": request.login,
             "password": request.password,
         }
-        sender = EventSender(event_type=event_type, context=send_context)
-        # try:
-        #     sender.send()
-        # except Exception as e:
-        #     capture_exception(e)
-        #     return notify_registration_pb2.UserRegisteredResponse(result=False)
+        sender = EventSender()
+        try:
+            sender.send_event(send_context, event_type)
+        except Exception as e:
+            capture_exception(e)
+            return notify_registration_pb2.UserRegisteredResponse(result=False)
 
         return notify_registration_pb2.UserRegisteredResponse(result=True)
 
