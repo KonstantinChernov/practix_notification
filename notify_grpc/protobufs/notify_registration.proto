@@ -4,6 +4,7 @@ message UserRegisteredRequest {
   string email = 1;
   string login = 2;
   string password = 3;
+  string request_id = 4;
 }
 
 message UserRegisteredResponse {

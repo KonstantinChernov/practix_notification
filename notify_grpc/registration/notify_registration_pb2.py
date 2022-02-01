@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x19notify_registration.proto\"G\n\x15UserRegisteredRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\r\n\x05login\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"(\n\x16UserRegisteredResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32X\n\x0eNotifyRegister\x12\x46\n\x11UserRegisterEvent\x12\x16.UserRegisteredRequest\x1a\x17.UserRegisteredResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x19notify_registration.proto\"[\n\x15UserRegisteredRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\r\n\x05login\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x12\n\nrequest_id\x18\x04 \x01(\t\"(\n\x16UserRegisteredResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32X\n\x0eNotifyRegister\x12\x46\n\x11UserRegisterEvent\x12\x16.UserRegisteredRequest\x1a\x17.UserRegisteredResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -54,6 +54,13 @@ _USERREGISTEREDREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='request_id', full_name='UserRegisteredRequest.request_id', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -67,7 +74,7 @@ _USERREGISTEREDREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=29,
-  serialized_end=100,
+  serialized_end=120,
 )
 
 
@@ -98,8 +105,8 @@ _USERREGISTEREDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=102,
-  serialized_end=142,
+  serialized_start=122,
+  serialized_end=162,
 )
 
 DESCRIPTOR.message_types_by_name['UserRegisteredRequest'] = _USERREGISTEREDREQUEST
@@ -129,8 +136,8 @@ _NOTIFYREGISTER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=144,
-  serialized_end=232,
+  serialized_start=164,
+  serialized_end=252,
   methods=[
   _descriptor.MethodDescriptor(
     name='UserRegisterEvent',
