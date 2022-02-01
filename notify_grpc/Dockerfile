@@ -9,6 +9,5 @@ COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt --no-cache-dir
 
 COPY . /code
-
 EXPOSE 50051
-ENTRYPOINT ["python3", "notify_grpc/get_register_event.py"]
+ENTRYPOINT ["python3", "registration/registration_event_listener.py"]
