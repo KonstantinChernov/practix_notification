@@ -18,4 +18,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUTH_GRPC_HOST = os.getenv('AUTH_GRPC_HOST', '127.0.0.1')
 AUTH_GRPC_PORT = os.getenv('AUTH_GRPC_PORT', '50051')
 
+RABBITMQ_DEFAULT_USER = os.getenv('RABBITMQ_DEFAULT_USER')
+RABBITMQ_DEFAULT_PASS = os.getenv('RABBITMQ_DEFAULT_PASS')
+RABBIT_HOST = os.getenv('RABBIT_HOST')
+RABBIT_URL = f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:" \
+             f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@{os.getenv('RABBITMQ_HOST')}/"
+
 SENTRY_DSN = os.getenv('SENTRY_DSN')

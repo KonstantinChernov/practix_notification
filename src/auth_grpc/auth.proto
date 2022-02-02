@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message CheckRoleRequest {
+  string access_token = 1;
+  repeated string roles = 2;
+}
+
+message CheckRoleResponse {
+  bool result = 1;
+  string status = 2;
+}
+
+service Auth {
+  rpc CheckRole (CheckRoleRequest) returns (CheckRoleResponse) {}
+}

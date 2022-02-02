@@ -1,5 +1,6 @@
 import uvicorn
 import sentry_sdk
+from aio_pika import connect
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
@@ -22,7 +23,12 @@ sentry_sdk.init(dsn=config.SENTRY_DSN)
 
 @app.on_event('startup')
 async def startup():
-    ...
+    rabbit_producer.connection = await connect(config.RABBIT_URL)
+
+
+@app.on_event('shutdown')
+async def shutdown():
+    await rabbit_producer.connection.close()
 
 
 @app.middleware('http')
@@ -39,7 +45,7 @@ async def add_tracing(request: Request, call_next):
         span.set_tag('http.status_code', response.status_code)
     return response
 
-
+app.include_router(views.router, prefix='/api/v1/events', tags=['events'])
 app.add_middleware(SentryAsgiMiddleware)
 
 if __name__ == '__main__':

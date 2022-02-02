@@ -15,17 +15,16 @@ services:
 
   notify-grpc:
     build:
-      context: src/
-      dockerfile: Dockerfile.grpc
+      context: notify_grpc/
+      dockerfile: Dockerfile
     env_file:
       - ./.env
     volumes:
-      - ./src:/code
+      - ./notify_grpc:/code
     networks:
       - movies_network
       - elk_stack
     depends_on:
-#      - movies-notifications-api
       - movies-rabbitmq
 
   movies-notifications-scheduler:
@@ -47,7 +46,6 @@ services:
     build:
       context: worker/
       dockerfile: Dockerfile
-#    command: python3 /code/worker.py
     volumes:
       - ./worker:/code
     env_file:
@@ -69,9 +67,6 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     env_file:
       - ./.env
-#    environment:
-#      RABBITMQ_DEFAULT_USER: "guest"
-#      RABBITMQ_DEFAULT_PASS: "guest"
     networks:
       - elk_stack
       - movies_network
