@@ -1,4 +1,4 @@
-name: UGC Sprint
+name: Notification Sprint
 
 on:
   push:
