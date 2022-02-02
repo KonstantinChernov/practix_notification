@@ -12,9 +12,9 @@ class EventSender:
         asyncio.set_event_loop(self.loop)
 
     @backoff.on_exception(backoff.expo, ConnectionError)
-    async def async_send_event(self, context, event_code, headers):
+    async def async_send_event(self, context: dict, event_code: str, headers: dict):
         connection = await connect(f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:"
-                                   f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@movies-rabbitmq:5672/",
+                                   f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@{os.getenv('RABBITMQ_HOST')}/",
                                    loop=self.loop)
         channel = await connection.channel()
         await channel.declare_queue(
@@ -34,5 +34,5 @@ class EventSender:
 
         await connection.close()
 
-    def send_event(self, context, event_code, headers):
+    def send_event(self, context: dict, event_code: str, headers: dict):
         return self.loop.run_until_complete(self.async_send_event(context, event_code, headers))

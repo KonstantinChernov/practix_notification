@@ -16,10 +16,6 @@ loop = asyncio.get_event_loop()
 
 sentry_sdk.init(
     os.getenv('SENTRY_DSN'),
-
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
     traces_sample_rate=1.0
 )
 
@@ -30,8 +26,8 @@ async def on_user_registration(message: IncomingMessage):
         print("     Message body is: %r" % message.body)
         request_id = message.headers['request_id'][0].decode()
         registered_user_info = json.loads(message.body.decode())
-        handler = UserRegistrationHandler(**registered_user_info)
-        with tracer.start_span('start-send-user-welcome-letter') as span:
+        handler = UserRegistrationHandler(info=registered_user_info)
+        with tracer.start_span('start-send-user-welcome') as span:
             span.set_tag('http.request_id', request_id)
             try:
                 handler.run()
@@ -44,7 +40,7 @@ async def on_user_registration(message: IncomingMessage):
 @backoff.on_exception(backoff.expo, ConnectionError)
 async def user_registration_listener():
     connection = await connect(f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:"
-                               f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@movies-rabbitmq:5672/")
+                               f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@{os.getenv('RABBITMQ_HOST')}/")
     channel = await connection.channel()
     await channel.set_qos(prefetch_count=1)
 
