@@ -1,17 +1,31 @@
 services:
   movies-notifications-api:
     build:
-      context: notify_grpc/
+      context: src/
       dockerfile: Dockerfile
     env_file:
       - ./.env
     volumes:
-      - ./notify_grpc:/code
+      - ./src:/code
     networks:
       - movies_network
       - elk_stack
     depends_on:
       - movies-rabbitmq
+
+  nginx-notifications:
+    image: nginx:1.19.2
+    depends_on:
+      - movies-notifications-api
+    ports:
+      - "80:80"
+    volumes:
+      - ./etc/nginx/configs:/etc/nginx/conf.d:ro
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /tmp/logs/nginx/:/var/log/nginx/
+    networks:
+      - movies_network
+      - elk_stack
 
   notify-grpc:
     build:

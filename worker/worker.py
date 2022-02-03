@@ -40,7 +40,7 @@ async def on_user_registration(message: IncomingMessage):
 @backoff.on_exception(backoff.expo, ConnectionError)
 async def user_registration_listener():
     connection = await connect(f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:"
-                               f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@{os.getenv('RABBITMQ_HOST')}/")
+                               f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@movies-rabbitmq:5672/")
     channel = await connection.channel()
     await channel.set_qos(prefetch_count=1)
 

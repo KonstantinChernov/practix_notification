@@ -14,7 +14,7 @@ class EventSender:
     @backoff.on_exception(backoff.expo, ConnectionError)
     async def async_send_event(self, context: dict, event_code: str, headers: dict):
         connection = await connect(f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:"
-                                   f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@{os.getenv('RABBITMQ_HOST')}/",
+                                   f"{os.getenv('RABBITMQ_DEFAULT_PASS')}@movies-rabbitmq:5672/",
                                    loop=self.loop)
         channel = await connection.channel()
         await channel.declare_queue(

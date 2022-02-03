@@ -1,11 +1,7 @@
 import logging
 import os
-import uuid
-from datetime import datetime
 from http import HTTPStatus
-from typing import Optional
 
-import jwt
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 
@@ -24,13 +20,13 @@ class CustomEmailEvent(BaseModel):
 
 
 @router.post(
-    'custom-email/',
+    '/custom-email',
     summary='Точка для создания ивента на кастомное оповещение пользователей',
     description='Принимает событие и список адресов на которые необходимо отправить оповещение',
     response_description='возвращается статус код',
     tags=['views'],
 )
-@check_permission(roles=['Admin'])
+# @check_permission(roles=['Admin'])
 async def send_custom_email_event(
         request: Request,
         event: CustomEmailEvent,
