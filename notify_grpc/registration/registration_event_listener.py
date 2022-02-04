@@ -29,11 +29,9 @@ class NotifyNewUser(notify_registration_pb2_grpc.NotifyRegisterServicer):
             "login": request.login,
             "password": request.password,
         }
-        request_id_header = request.request_id,
-
         sender = EventSender(loop)
         try:
-            sender.send_event(send_context, event_type, headers={'request_id': request_id_header})
+            sender.send_event(send_context, event_type, request.request_id)
         except Exception as e:
             capture_exception(e)
             return notify_registration_pb2.UserRegisteredResponse(result=False)
