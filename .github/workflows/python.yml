@@ -51,7 +51,7 @@ jobs:
             # stop the build if there are Python syntax errors or undefined names
             flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
             # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+            flake8 . --format=html --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics > report.html
 
       - name: Create file status_linter.txt and write the job status into it
         if: always()
@@ -64,6 +64,14 @@ jobs:
         with:
           name: pass_status_linter
           path: status_linter.txt
+
+      - name: Save linter report
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: report_linter
+          path: report.html
+          env-url: REPORTHTML
 
   type_checks:
     name: Check types
@@ -135,6 +143,7 @@ jobs:
         if: steps.extract_branch.outputs.branch == 'cicd'
         run: echo "status_linter = ${{ steps.set_outputs.outputs.status_linter }}"
              echo "status_types = ${{ steps.set_outputs.outputs.status_types }}"
+             echo "${{ REPORTHTML }}"
 
       - name: send message
         uses: appleboy/telegram-action@master
