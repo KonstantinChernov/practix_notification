@@ -71,7 +71,6 @@ jobs:
         with:
           name: report_linter
           path: report.html
-          env-url: REPORTHTML
 
   type_checks:
     name: Check types
