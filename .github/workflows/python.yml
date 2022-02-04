@@ -160,6 +160,8 @@ jobs:
             Linter checks: ${{ steps.set_outputs.outputs.status_linter }}
             Types checks: ${{ steps.set_outputs.outputs.status_types }}
             
+            Reports: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
   
 
     continue-on-error: true
