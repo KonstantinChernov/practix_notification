@@ -143,7 +143,7 @@ jobs:
         if: steps.extract_branch.outputs.branch == 'cicd'
         run: echo "status_linter = ${{ steps.set_outputs.outputs.status_linter }}"
              echo "status_types = ${{ steps.set_outputs.outputs.status_types }}"
-             echo "${{ REPORTHTML }}"
+             echo "${{ env.REPORTHTML }}"
 
       - name: send message
         uses: appleboy/telegram-action@master
