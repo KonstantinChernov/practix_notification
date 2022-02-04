@@ -26,7 +26,7 @@ class CustomEmailEvent(BaseModel):
     response_description='возвращается статус код',
     tags=['views'],
 )
-# @check_permission(roles=['Admin'])
+@check_permission(roles=['Admin'])
 async def send_custom_email_event(
         request: Request,
         event: CustomEmailEvent,
