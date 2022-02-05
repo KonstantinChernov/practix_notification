@@ -25,7 +25,8 @@ class EventSender:
         message = Message(
             json.dumps(context).encode("utf-8"),
             delivery_mode=DeliveryMode.PERSISTENT,
-            headers={'request_id': request_id_header}
+            headers={'request_id': request_id_header},
+            priority=os.getenv('MAX_PRIORITY_MESSAGE')
         )
         await channel.default_exchange.publish(
             message,
