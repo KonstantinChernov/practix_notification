@@ -41,11 +41,38 @@ async def on_custom_email_event(message: IncomingMessage):
         await handler.run()
 
 
+async def on_common_week_event(message: IncomingMessage):
+    async with message.process():
+        request_id = message.headers['request_id']
+        info = json.loads(message.body.decode())
+
+        handler = EventHandler(info=info,
+                               request_id=request_id,
+                               event_type=os.getenv('COMMON_WEEK_QUEUE'))
+        await handler.run()
+
+
+async def on_personal_week_event(message: IncomingMessage):
+    async with message.process():
+        request_id = message.headers['request_id']
+        info = json.loads(message.body.decode())
+
+        email = info.pop('email')
+        info['receivers_emails'] = [email]
+
+        handler = EventHandler(info=info,
+                               request_id=request_id,
+                               event_type=os.getenv('PERSONAL_WEEK_QUEUE'))
+        await handler.run()
+
+
 @backoff.on_exception(backoff.expo, ConnectionError)
 async def event_listener(queue_name):
     callbacks = {
         os.getenv('USER_REGISTRATION_QUEUE'): on_user_registration,
         os.getenv('CUSTOM_EMAIL_QUEUE'): on_custom_email_event,
+        os.getenv('COMMON_WEEK_QUEUE'): on_common_week_event,
+        os.getenv('PERSONAL_WEEK_QUEUE'): on_personal_week_event,
     }
 
     connection = await connect(f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER')}:"
@@ -64,6 +91,8 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(event_listener(os.getenv('USER_REGISTRATION_QUEUE')))
     loop.create_task(event_listener(os.getenv('CUSTOM_EMAIL_QUEUE')))
+    loop.create_task(event_listener(os.getenv('COMMON_WEEK_QUEUE')))
+    loop.create_task(event_listener(os.getenv('PERSONAL_WEEK_QUEUE')))
 
     print(" [*] Waiting for messages. To exit press CTRL+C")
     loop.run_forever()
