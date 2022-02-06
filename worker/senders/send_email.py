@@ -13,11 +13,14 @@ class EmailSender:
     TEMPLATES = {
         os.getenv('USER_REGISTRATION_QUEUE'): 'welcome_mail.html',
         os.getenv('CUSTOM_EMAIL_QUEUE'): 'mail.html',
-
+        os.getenv('COMMON_WEEK_QUEUE'): 'new_films_mail.html',
+        os.getenv('PERSONAL_WEEK_QUEUE'): 'recomendations_films_mail.html',
     }
     SUBJECTS = {
         os.getenv('USER_REGISTRATION_QUEUE'): 'WELCOME',
         os.getenv('CUSTOM_EMAIL_QUEUE'): 'MASS MAILING',
+        os.getenv('COMMON_WEEK_QUEUE'): 'NEW FILMS',
+        os.getenv('PERSONAL_WEEK_QUEUE'): 'FILMS FOR YOU',
     }
 
     def __init__(self, event_type: str, receivers_emails: list, context: dict):

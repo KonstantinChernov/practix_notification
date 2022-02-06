@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title%}
+ <h1 class="mc-toc-title" style="text-align: center;">New films in our online cinema</h1>
+{% endblock %}
+
+{% block content %}
+
+{% for film in films %}
+    <h2>{{ film.title }}</h2>
+    <p>{{ film.rating }}</p>
+    <p>{{ film.description }}</p>
+    <p>{{ film.genres_titles }}</p>
+    <p>{{ film.directors_names }}</p>
+    <br>
+    <hr>
+    <br>
+{% endfor %}
+
+{% endblock %}
+
