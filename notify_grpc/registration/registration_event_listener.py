@@ -28,6 +28,7 @@ class NotifyNewUser(notify_registration_pb2_grpc.NotifyRegisterServicer):
             "email": request.email,
             "login": request.login,
             "password": request.password,
+            "notification_types": ['email', 'push'],
         }
         sender = EventSender(loop)
         try:
