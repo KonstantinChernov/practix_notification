@@ -24,3 +24,8 @@ https://github.com/KonstantinChernov/practix_ugc_2
 
 Репозиторий Async-api
 https://github.com/KonstantinChernov/practix_async_api
+
+
+
+## Схема взаимодействия сервисов:
+![Image alt](https://ibb.co/YQPSfsW)
