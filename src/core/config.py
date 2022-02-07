@@ -9,8 +9,14 @@ logging_config.dictConfig(LOGGING)
 # Название проекта. Используется в Swagger-документации
 PROJECT_NAME = os.getenv('PROJECT_NAME', 'movies-notification')
 
+MONGO_DB_NAME = os.getenv('MONGO_NOTIFICATIONS_DB_NAME')
+MONGO_NOTIFICATIONS_COLLECTION_NAME = os.getenv('MONGO_NOTIFICATIONS_COLLECTION_NAME')
+AUTH_DB_DSN = (f"dbname={os.getenv('AUTH_POSTGRES_DB')} "
+               f"user={os.getenv('AUTH_POSTGRES_USER')} "
+               f"password={os.getenv('AUTH_POSTGRES_PASSWORD')} "
+               f"host={os.getenv('AUTH_POSTGRES_HOST')} "
+               f"port={os.getenv('AUTH_POSTGRES_PORT')} ")
 
-# Корень проекта
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
