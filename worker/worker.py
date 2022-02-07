@@ -37,7 +37,7 @@ async def on_custom_email_event(message: IncomingMessage):
 
         handler = EventHandler(info=info,
                                request_id=request_id,
-                               event_type=os.getenv('CUSTOM_EMAIL_QUEUE'))
+                               event_type=os.getenv('CUSTOM_NOTIFICATION_QUEUE'))
         await handler.run()
 
 
@@ -70,7 +70,7 @@ async def on_personal_week_event(message: IncomingMessage):
 async def event_listener(queue_name):
     callbacks = {
         os.getenv('USER_REGISTRATION_QUEUE'): on_user_registration,
-        os.getenv('CUSTOM_EMAIL_QUEUE'): on_custom_email_event,
+        os.getenv('CUSTOM_NOTIFICATION_QUEUE'): on_custom_email_event,
         os.getenv('COMMON_WEEK_QUEUE'): on_common_week_event,
         os.getenv('PERSONAL_WEEK_QUEUE'): on_personal_week_event,
     }
@@ -90,7 +90,7 @@ async def event_listener(queue_name):
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(event_listener(os.getenv('USER_REGISTRATION_QUEUE')))
-    loop.create_task(event_listener(os.getenv('CUSTOM_EMAIL_QUEUE')))
+    loop.create_task(event_listener(os.getenv('CUSTOM_NOTIFICATION_QUEUE')))
     loop.create_task(event_listener(os.getenv('COMMON_WEEK_QUEUE')))
     loop.create_task(event_listener(os.getenv('PERSONAL_WEEK_QUEUE')))
 

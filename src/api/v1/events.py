@@ -3,9 +3,9 @@ import os
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
 
 from auth_grpc.auth_check import check_permission
+from models.event import Event
 from services.rabbit_producer import RabbitProducerAdapter, get_rabbit_producer
 
 router = APIRouter()
@@ -13,30 +13,24 @@ router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 
 
-class CustomEmailEvent(BaseModel):
-    receivers_emails: list[str]
-    title: str
-    text: str
-
-
 @router.post(
-    '/custom-email',
+    '/custom-notification',
     summary='Точка для создания ивента на кастомное оповещение пользователей',
     description='Принимает событие и список адресов на которые необходимо отправить оповещение',
     response_description='возвращается статус код',
-    tags=['views'],
+    tags=['events'],
 )
 @check_permission(roles=['Admin'])
-async def send_custom_email_event(
+async def send_custom_notification_event(
         request: Request,
-        event: CustomEmailEvent,
+        event: Event,
         rabbit_service: RabbitProducerAdapter = Depends(get_rabbit_producer),
 ):
     event_info = event.dict()
     request_id_header = request.headers.get('X-Request-Id')
     try:
         await rabbit_service.send_event(
-            event_code=os.getenv('CUSTOM_EMAIL_QUEUE'),
+            event_code=os.getenv('CUSTOM_NOTIFICATION_QUEUE'),
             context=event_info,
             headers={'request_id': request_id_header}
         )

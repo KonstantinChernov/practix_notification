@@ -4,28 +4,33 @@ import aiosmtplib
 from email.message import EmailMessage
 from jinja2 import Environment, FileSystemLoader
 
+from senders.sender import Sender
+
 CHUNK_SIZE = 200
 BASE_DIR = os.path.dirname(__file__)
 TEMPLATE_DIR = os.path.join(BASE_DIR, '../templates')
 
 
-class EmailSender:
+class EmailSender(Sender):
     TEMPLATES = {
         os.getenv('USER_REGISTRATION_QUEUE'): 'welcome_mail.html',
-        os.getenv('CUSTOM_EMAIL_QUEUE'): 'mail.html',
-
+        os.getenv('CUSTOM_NOTIFICATION_QUEUE'): 'mail.html',
+        os.getenv('COMMON_WEEK_QUEUE'): 'new_films_mail.html',
+        os.getenv('PERSONAL_WEEK_QUEUE'): 'recomendations_films_mail.html',
     }
     SUBJECTS = {
         os.getenv('USER_REGISTRATION_QUEUE'): 'WELCOME',
-        os.getenv('CUSTOM_EMAIL_QUEUE'): 'MASS MAILING',
+        os.getenv('CUSTOM_NOTIFICATION_QUEUE'): 'MASS MAILING',
+        os.getenv('COMMON_WEEK_QUEUE'): 'NEW FILMS',
+        os.getenv('PERSONAL_WEEK_QUEUE'): 'FILMS FOR YOU',
     }
 
-    def __init__(self, event_type: str, receivers_emails: list, context: dict):
+    def __init__(self, event_type: str, context: dict):
         self.server = aiosmtplib.SMTP('smtp.yandex.ru', 465, use_tls=True)
         self.mail_user = os.getenv('SMTP_USER')
         self.mail_password = os.getenv('SMTP_PASSWORD')
         self.from_ = self.mail_user
-        self.to = receivers_emails
+        self.to = context.pop('receivers_emails')
         self.event_type = event_type
         self.context = context
         self.subject = self.SUBJECTS[self.event_type]

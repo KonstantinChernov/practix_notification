@@ -24,3 +24,11 @@ https://github.com/KonstantinChernov/practix_ugc_2
 
 Репозиторий Async-api
 https://github.com/KonstantinChernov/practix_async_api
+
+
+
+## Схема взаимодействия сервисов:
+![Image alt](https://i.ibb.co/MSZHP0h/2022-02-06-17-33-10.png)
+
+## Схема работы Scheduler:
+![Image alt](https://i.ibb.co/1Qcfhmg/2022-02-06-17-35-34.png)
