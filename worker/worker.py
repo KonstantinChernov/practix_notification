@@ -3,6 +3,8 @@ import json
 import os
 import backoff
 from aio_pika import connect, IncomingMessage
+from motor.motor_asyncio import AsyncIOMotorClient
+from mongo_adapter import MongoAdapter
 
 import sentry_sdk
 
@@ -18,6 +20,8 @@ sentry_sdk.init(
 
 async def on_user_registration(message: IncomingMessage):
     async with message.process():
+        mongo_client = AsyncIOMotorClient(os.getenv('MONGO_NOTIFICATIONS_HOST'), os.getenv('MONGO_NOTIFICATIONS_PORT'))
+        input_mongo_adapter = MongoAdapter(mongo=mongo_client)
         request_id = message.headers['request_id']
         info = json.loads(message.body.decode())
 
@@ -26,34 +30,43 @@ async def on_user_registration(message: IncomingMessage):
 
         handler = EventHandler(info=info,
                                request_id=request_id,
-                               event_type=os.getenv('USER_REGISTRATION_QUEUE'))
+                               event_type=os.getenv('USER_REGISTRATION_QUEUE'),
+                               mongo_adapter=input_mongo_adapter)
         await handler.run()
 
 
 async def on_custom_email_event(message: IncomingMessage):
     async with message.process():
+        mongo_client = AsyncIOMotorClient(os.getenv('MONGO_NOTIFICATIONS_HOST'), os.getenv('MONGO_NOTIFICATIONS_PORT'))
+        input_mongo_adapter = MongoAdapter(mongo=mongo_client)
         request_id = message.headers['request_id']
         info = json.loads(message.body.decode())
 
         handler = EventHandler(info=info,
                                request_id=request_id,
-                               event_type=os.getenv('CUSTOM_NOTIFICATION_QUEUE'))
+                               event_type=os.getenv('CUSTOM_NOTIFICATION_QUEUE'),
+                               mongo_adapter=input_mongo_adapter)
         await handler.run()
 
 
 async def on_common_week_event(message: IncomingMessage):
     async with message.process():
+        mongo_client = AsyncIOMotorClient(os.getenv('MONGO_NOTIFICATIONS_HOST'), os.getenv('MONGO_NOTIFICATIONS_PORT'))
+        input_mongo_adapter = MongoAdapter(mongo=mongo_client)
         request_id = message.headers['request_id']
         info = json.loads(message.body.decode())
 
         handler = EventHandler(info=info,
                                request_id=request_id,
-                               event_type=os.getenv('COMMON_WEEK_QUEUE'))
+                               event_type=os.getenv('COMMON_WEEK_QUEUE'),
+                               mongo_adapter=input_mongo_adapter)
         await handler.run()
 
 
-async def on_personal_week_event(message: IncomingMessage):
+async def on_personal_week_event(message: IncomingMessage, mongo_adapter: MongoAdapter):
     async with message.process():
+        mongo_client = AsyncIOMotorClient(os.getenv('MONGO_NOTIFICATIONS_HOST'), os.getenv('MONGO_NOTIFICATIONS_PORT'))
+        input_mongo_adapter = MongoAdapter(mongo=mongo_client)
         request_id = message.headers['request_id']
         info = json.loads(message.body.decode())
 
@@ -62,7 +75,8 @@ async def on_personal_week_event(message: IncomingMessage):
 
         handler = EventHandler(info=info,
                                request_id=request_id,
-                               event_type=os.getenv('PERSONAL_WEEK_QUEUE'))
+                               event_type=os.getenv('PERSONAL_WEEK_QUEUE'),
+                               mongo_adapter=input_mongo_adapter)
         await handler.run()
 
 
@@ -89,10 +103,10 @@ async def event_listener(queue_name):
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.create_task(event_listener(os.getenv('USER_REGISTRATION_QUEUE')))
-    loop.create_task(event_listener(os.getenv('CUSTOM_NOTIFICATION_QUEUE')))
-    loop.create_task(event_listener(os.getenv('COMMON_WEEK_QUEUE')))
-    loop.create_task(event_listener(os.getenv('PERSONAL_WEEK_QUEUE')))
+    loop.create_task(event_listener(queue_name=os.getenv('USER_REGISTRATION_QUEUE')))
+    loop.create_task(event_listener(queue_name=os.getenv('CUSTOM_NOTIFICATION_QUEUE')))
+    loop.create_task(event_listener(queue_name=os.getenv('COMMON_WEEK_QUEUE')))
+    loop.create_task(event_listener(queue_name=os.getenv('PERSONAL_WEEK_QUEUE')))
 
     print(" [*] Waiting for messages. To exit press CTRL+C")
     loop.run_forever()

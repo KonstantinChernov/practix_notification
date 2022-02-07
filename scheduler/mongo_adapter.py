@@ -29,7 +29,7 @@ class AbstractDBAdapter:
 
 
 class MongoAdapter(AbstractDBAdapter):
-    database_name = config('MONGO_DB_NAME')
+    database_name = config('MONGO_UGC_DB_NAME')
 
     def __init__(self, mongo: MongoClient):
         self.mongo_client = mongo

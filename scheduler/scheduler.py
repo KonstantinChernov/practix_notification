@@ -5,7 +5,7 @@ import psycopg2
 from apscheduler.schedulers.background import BackgroundScheduler
 from db_adapter import AuthDBAdapter, FilmWorkDBAdapter
 from decouple import config
-from notify_grpc.send_event import EventSender
+from send_event import EventSender
 from mongo_adapter import MongoAdapter
 from pymongo import MongoClient
 from models import Favorite
@@ -48,7 +48,8 @@ class MailEventGenerator:
                 while user_info:
                     recievers_emails = [info['email'] for info in user_info]
                     self.event_sender.send_event(context={'receivers_emails': recievers_emails,
-                                                          'films': transformed_films},
+                                                          'films': transformed_films,
+                                                          'notification_types': ['email']},
                                                  event_code=event_code,
                                                  request_id_header="")
                     offset += self.auth_db_adapter.chunk_size
@@ -88,7 +89,8 @@ class MailEventGenerator:
                         finally:
                             filmwork_pg_conn.close()
                         self.event_sender.send_event(context={'email': info['email'],
-                                                              'films': self.__get_transformed_films(personal_films)},
+                                                              'films': self.__get_transformed_films(personal_films),
+                                                              'notification_types': ['email']},
                                                      event_code=event_code,
                                                      request_id_header="")
                         offset += self.auth_db_adapter.chunk_size
@@ -129,7 +131,7 @@ if __name__ == '__main__':
     input_filmwork_db_adapter = FilmWorkDBAdapter(dsn=auth_input_dsn,
                                                   chunk_size=config('CHUNK_SIZE'))
 
-    mongo_client = MongoClient(config('MONGO_HOST'), config('MONGO_PORT'))
+    mongo_client = MongoClient(config('MONGO_UGC_HOST'), config('MONGO_UGC_PORT'))
     input_mongo_adapter = MongoAdapter(mongo=mongo_client)
     input_event_sender = EventSender(loop=loop)
     event_generator = MailEventGenerator(

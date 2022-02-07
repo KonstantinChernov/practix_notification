@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
-from api.v1 import events
+from api.v1 import events, notifications
 from core import config
 from services import rabbit_producer
 from tracer import tracer
@@ -50,6 +50,7 @@ async def add_tracing(request: Request, call_next):
 
 
 app.include_router(events.router, prefix='/api/v1/events', tags=['events'])
+app.include_router(notifications.router, prefix='/api/v1/notifications', tags=['notifications'])
 app.add_middleware(SentryAsgiMiddleware)
 
 if __name__ == '__main__':
