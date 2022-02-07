@@ -15,8 +15,8 @@ logging.basicConfig(level=logging.INFO)
 
 @router.get(
     '/notifications',
-    summary='Точка для получения ивента пользователя',
-    response_description='Возвращает ивенты пользователя',
+    summary='Точка для получения уведомлений пользователя пользователя',
+    response_description='Возвращает уведомления пользователя',
     tags=['notifications'],
 )
 @check_permission(roles=['Subscriber'])
